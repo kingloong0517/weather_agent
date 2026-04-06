@@ -66,12 +66,14 @@ def weather_tool(date: str, location: str) -> Dict[str, Any]:
         advice = ""
         if "雨" in weather:
             advice = "建议带伞"
+        elif "云" in weather or "阴" in weather:
+            advice = "天气多云/阴天，建议随身携带一把伞"
         elif temperature != "未知" and int(temperature) > 30:
-            advice = "天气炎热，注意防暑"
+            advice = "天气炎热，注意防暑，建议带遮阳伞"
         elif temperature != "未知" and int(temperature) < 10:
             advice = "天气寒冷，注意保暖"
         else:
-            advice = "天气适宜，适合外出"
+            advice = "天气适宜，适合外出，无需带伞"
         
         return {
             "weather": weather,

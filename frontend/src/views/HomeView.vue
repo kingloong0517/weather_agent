@@ -18,7 +18,6 @@ const sendMessage = async () => {
     <div class="chat-container">
       <div class="chat-header">
         <h1>天气 Agent</h1>
-        <p>规则驱动的天气查询系统</p>
       </div>
       
       <div class="chat-body">
@@ -36,6 +35,14 @@ const sendMessage = async () => {
               <!-- 意图识别 -->
               <div class="flow-step" v-if="msg.intent">
                 <span class="flow-arrow">→</span> 意图识别：{{ msg.intent === 'weather_query' ? '天气查询' : msg.intent === 'schedule_reminder' ? '日程提醒' : msg.intent }}
+              </div>
+              
+              <!-- ReAct 步骤 -->
+              <div v-for="(step, step_index) in msg.execution_chain?.react_steps" :key="step_index" class="flow-step" :class="step.type">
+                <span class="flow-arrow">→</span> 
+                <span v-if="step.type === 'thought'">思考：{{ step.content }}</span>
+                <span v-else-if="step.type === 'action'">动作：{{ step.content }}</span>
+                <span v-else-if="step.type === 'observation'">观察：{{ step.content }}</span>
               </div>
               
               <!-- 工具调用 -->
@@ -190,6 +197,32 @@ const sendMessage = async () => {
   padding-left: 25px;
   border-radius: 4px;
   transition: all 0.2s ease;
+}
+
+.flow-step.thought {
+  color: #2196f3;
+  font-style: italic;
+}
+
+.flow-step.action {
+  color: #4caf50;
+  font-weight: 500;
+}
+
+.flow-step.observation {
+  color: #ff9800;
+}
+
+.flow-step.thought::before {
+  content: "💭 ";
+}
+
+.flow-step.action::before {
+  content: "⚡ ";
+}
+
+.flow-step.observation::before {
+  content: "👁️ ";
 }
 
 .loading {
